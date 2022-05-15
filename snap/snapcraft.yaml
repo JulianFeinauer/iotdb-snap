@@ -34,4 +34,4 @@ parts:
       wget -O $SNAPCRAFT_PART_INSTALL/iotdb.zip https://dlcdn.apache.org/iotdb/0.13.0/apache-iotdb-0.13.0-all-bin.zip
       unzip $SNAPCRAFT_PART_INSTALL/iotdb.zip -d $SNAPCRAFT_PART_INSTALL/
       # Copy over
-      cp iotdb-engine.properties $SNAPCRAFT_PART_INSTALL/apache-iotdb-0.13.0-all-bin/conf/
+      cp ../../../iotdb-engine.properties $SNAPCRAFT_PART_INSTALL/apache-iotdb-0.13.0-all-bin/conf/
