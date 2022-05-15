@@ -9,11 +9,18 @@ confinement: strict
 grade: devel
 
 apps:
-  run:
+  server:
     command: apache-iotdb-0.13.0-all-bin/sbin/start-server.sh
+    daemon: simple
     plugs: [network, network-bind, home]
     environment:
       JAVA_HOME: "$SNAP/usr/lib/jvm/java-11-openjdk-amd64"
+  cli:
+    command: apache-iotdb-0.13.0-all-bin/sbin/start-cli.sh
+    plugs: [network]
+    environment:
+      JAVA_HOME: "$SNAP/usr/lib/jvm/java-11-openjdk-amd64"
+
 
 parts:
   iotdb:
