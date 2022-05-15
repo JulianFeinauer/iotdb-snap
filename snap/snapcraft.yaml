@@ -1,0 +1,30 @@
+name: iotdb
+version: "0.13.0-rev0"
+summary: Apache IoTDB
+description: |
+  Apache IoTDB is cool
+base: core20
+
+confinement: strict
+grade: devel
+
+apps:
+  run:
+    command: apache-iotdb-0.13.0-all-bin/sbin/start-server.sh
+    plugs: [network, network-bind, home]
+    environment:
+      JAVA_HOME: "$SNAP/usr/lib/jvm/java-11-openjdk-amd64"
+
+parts:
+  iotdb:
+    build-packages:
+      - wget
+    stage-packages:
+      - openjdk-11-jre-headless
+    plugin: nil
+    override-build: |
+      # Download binary release
+      wget -O $SNAPCRAFT_PART_INSTALL/iotdb.zip https://dlcdn.apache.org/iotdb/0.13.0/apache-iotdb-0.13.0-all-bin.zip
+      unzip $SNAPCRAFT_PART_INSTALL/iotdb.zip -d $SNAPCRAFT_PART_INSTALL/
+      # Copy over
+      cp iotdb-engine.properties $SNAPCRAFT_PART_INSTALL/apache-iotdb-0.13.0-all-bin/conf/
