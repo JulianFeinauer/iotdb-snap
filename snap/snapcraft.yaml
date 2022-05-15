@@ -26,6 +26,7 @@ parts:
   iotdb:
     build-packages:
       - wget
+      - unzip
     stage-packages:
       - openjdk-11-jre-headless
     plugin: nil
