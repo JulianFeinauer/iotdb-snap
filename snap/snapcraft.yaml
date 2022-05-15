@@ -1,4 +1,4 @@
-name: iotdb
+name: iotdb-snap
 version: "0.13.0-rev0"
 summary: Apache IoTDB
 description: |
