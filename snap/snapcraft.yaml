@@ -29,6 +29,8 @@ parts:
       - unzip
     stage-packages:
       - openjdk-11-jre-headless
+      - ca-certificates
+      - ca-certificates-java
     plugin: nil
     override-build: |
       # Download binary release
