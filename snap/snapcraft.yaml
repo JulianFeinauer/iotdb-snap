@@ -38,3 +38,6 @@ parts:
       unzip $SNAPCRAFT_PART_INSTALL/iotdb.zip -d $SNAPCRAFT_PART_INSTALL/
       # Copy over
       cp ../../../iotdb-engine.properties $SNAPCRAFT_PART_INSTALL/apache-iotdb-0.13.0-all-bin/conf/
+    override-prime: |
+      snapcraftctl prime
+      rm -vf usr/lib/jvm/java-11-openjdk-*/lib/security/blacklisted.certs
