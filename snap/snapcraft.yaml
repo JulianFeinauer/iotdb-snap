@@ -12,7 +12,7 @@ apps:
   server:
     command: apache-iotdb-0.13.0-all-bin/sbin/start-server.sh
     daemon: simple
-    plugs: [network, network-bind, home]
+    plugs: [network, network-bind, home, system-files]
     environment:
       JAVA_HOME: "$SNAP/usr/lib/jvm/java-11-openjdk-amd64"
   cli:
