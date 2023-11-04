@@ -1,12 +1,16 @@
-name: iotdb-snap
-version: "0.13.0-rev0"
+name: apache-iotdb
+version: 1.2.2
 summary: Apache IoTDB
-description: |
-  Apache IoTDB is cool
-base: core20
+description: Apache IoTDB 1.2.2
+base: core22
+architectures:
+  - build-on: [amd64, arm64]
+    build-for: amd64
+  - build-on: [arm64, amd64]
+    build-for: arm64
 
-confinement: strict
 grade: stable
+confinement: strict
 
 plugs:
   # See https://snapcraft.io/docs/system-files-interface
@@ -17,20 +21,21 @@ plugs:
 
 apps:
   server:
-    command: apache-iotdb-0.13.0-all-bin/sbin/start-server.sh
+    command: apache-iotdb-1.2.2-all-bin/sbin/start-standalone.sh
     daemon: simple
     plugs: [network, network-bind, home, sysctl-config]
     environment:
-      JAVA_HOME: "$SNAP/usr/lib/jvm/java-11-openjdk-amd64"
+      JAVA_HOME: "$SNAP/usr/lib/jvm/java-11-openjdk-$CRAFT_TARGET_ARCH"
   cli:
-    command: apache-iotdb-0.13.0-all-bin/sbin/start-cli.sh
+    command: apache-iotdb-1.2.2-all-bin/sbin/start-cli.sh
     plugs: [network]
     environment:
-      JAVA_HOME: "$SNAP/usr/lib/jvm/java-11-openjdk-amd64"
-
+      JAVA_HOME: "$SNAP/usr/lib/jvm/java-11-openjdk-$CRAFT_TARGET_ARCH"
 
 parts:
+  # Install all prerequisites for IoTDB (Mainly Java) and download and unpack IoTDB distribution
   iotdb:
+    plugin: nil
     build-packages:
       - wget
       - unzip
@@ -38,14 +43,20 @@ parts:
       - openjdk-11-jre-headless
       - ca-certificates
       - ca-certificates-java
-    plugin: nil
     override-build: |
-      # Download binary release
-      wget -O $SNAPCRAFT_PART_INSTALL/iotdb.zip https://dlcdn.apache.org/iotdb/0.13.0/apache-iotdb-0.13.0-all-bin.zip
+      # Download and unpack binary release
+      wget -O $SNAPCRAFT_PART_INSTALL/iotdb.zip https://dlcdn.apache.org/iotdb/1.2.2/apache-iotdb-1.2.2-all-bin.zip
       unzip $SNAPCRAFT_PART_INSTALL/iotdb.zip -d $SNAPCRAFT_PART_INSTALL/
-      # Copy over
-      cp ../../../iotdb-engine.properties $SNAPCRAFT_PART_INSTALL/apache-iotdb-0.13.0-all-bin/conf/
+      # Delete the existing properties, as we'll be overlaying them with our own. 
+      rm $SNAPCRAFT_PART_INSTALL/apache-iotdb-1.2.2-all-bin/conf/*.properties
     override-prime: |
       snapcraftctl prime
       rm -vf usr/lib/jvm/java-11-openjdk-*/lib/security/blacklisted.certs
       rm -vf usr/lib/jvm/java-11-openjdk-*/lib/security/cacerts
+
+  # Overlay the configuration files
+  configs:
+    plugin: dump
+    source: config
+    organize:
+      '*': apache-iotdb-1.2.2-all-bin/conf/
